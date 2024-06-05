@@ -19,12 +19,11 @@ int Coordonnees::getSalle() const {
 }
 
 bool Coordonnees::operator==(const Coordonnees& c) const {
-  // À compléter
-  return false;
+  return salle == c.salle && ligne == c.ligne && colonne == c.colonne;
 }
 
 istream& operator>>(istream& is, Coordonnees& c) {
-  // À compléter
+  is >> c.salle >> c.ligne >> c.colonne;
   return is;
 }
 
@@ -66,11 +65,23 @@ int Salle::obtenirNbCases() const {
     return dimension * dimension;
 
   else if (type == Diamant) {
-    return 0;  // À compléter
+    int size = 0;
+    for (int i = 0; i < dimension; i++){
+      for (int j = 0; j < dimension; ++j){
+        if (abs(i - dimension / 2) + abs(j - dimension / 2) <= dimension / 2){
+          ++size;
+        }
+      }
+    }
+    return size;
   }
 
   else if (type == Triangle) {
-    return 0;  // À compléter
+    int size = 0;
+    for (int i = 0; i <= dimension / 2; ++i) {
+      size += (2 * i + 1);
+    }
+    return size;
   }
 
   return -1;  // Erreur
@@ -82,9 +93,35 @@ int Salle::obtenirIndice(int ligne, int colonne) const {
       return -1;
     return (ligne * dimension) + colonne;
   } else if (type == Diamant) {
-    // À compléter
+    if (ligne < 0 || ligne >= dimension || colonne < 0 || colonne >= dimension)
+      return -1;
+    if (abs(ligne - dimension / 2) + abs(colonne - dimension / 2) > dimension / 2)
+      return -1;
+    int index = 0;
+    for (int i = 0; i < ligne; ++i) {
+      for (int j = 0; j < dimension; ++j) {
+        if (abs(i - dimension / 2) + abs(j - dimension / 2) <= dimension / 2) {
+          ++index;
+        }
+      }
+    }
+    for (int j = 0; j < colonne; ++j) {
+      if (abs(ligne - dimension / 2) + abs(j - dimension / 2) <= dimension / 2) {
+        ++index;
+      }
+    }
+    return index;
   } else if (type == Triangle) {
-    // À compléter
+    if (ligne < 0 || ligne > dimension / 2 || colonne < 0 || colonne >= dimension)
+      return -1;
+    if (colonne < dimension / 2 - ligne || colonne > dimension / 2 + ligne)
+      return -1;
+    int index = 0;
+    for (int i = 0; i < ligne; ++i) {
+      index += (2 * i + 1);
+    }
+    index += (colonne - (dimension / 2 - ligne));
+    return index;
   }
 
   return -1;  // type invalide
