@@ -33,12 +33,7 @@ class Matrice {
     Matrice<T> operator*(const Matrice<T>& autre) const;
     Matrice<T>& operator=(const Matrice<T>& autre);                 
 
-    Matrice<T> multiplyIJK(const Matrice<T>& autre) const;
     Matrice<T> multiplyIKJ(const Matrice<T>& autre) const;
-    Matrice<T> multiplyJIK(const Matrice<T>& autre) const;
-    Matrice<T> multiplyJKI(const Matrice<T>& autre) const;
-    Matrice<T> multiplyKIJ(const Matrice<T>& autre) const;
-    Matrice<T> multiplyKJI(const Matrice<T>& autre) const;
 
     friend std::istream& operator>>(std::istream& is, Matrice<T>& matrice) {
         int lig, col;
@@ -177,24 +172,6 @@ Matrice<T> Matrice<T>::operator*(const Matrice<T>& autre) const{
 
 
 template<class T>
-Matrice<T> Matrice<T>::multiplyIJK(const Matrice<T>& autre) const {
-    validerMultiplicationDimensions(autre);
-
-    Matrice<T> resultat(lignes, autre.colonnes);
-    for (int i = 0; i < lignes; ++i) {
-        for (int j = 0; j < autre.colonnes; ++j) {
-            resultat(i, j) = T();
-            for (int k = 0; k < colonnes; ++k) {
-                resultat(i, j) += elements[i][k] * autre.elements[k][j];
-            }
-        }
-    }
-
-    return resultat;
-}
-
-
-template<class T>
 Matrice<T> Matrice<T>::multiplyIKJ(const Matrice<T>& autre) const {
     validerMultiplicationDimensions(autre);
 
@@ -204,83 +181,6 @@ Matrice<T> Matrice<T>::multiplyIKJ(const Matrice<T>& autre) const {
     for (int i = 0; i < lignes; ++i) {
         for (int k = 0; k < colonnes; ++k) {
             for (int j = 0; j < autre.colonnes; ++j) {
-                resultat(i, j) += elements[i][k] * autre.elements[k][j];
-            }
-        }
-    }
-
-    return resultat;
-}
-
-
-template<class T>
-Matrice<T> Matrice<T>::multiplyJIK(const Matrice<T>& autre) const {
-    validerMultiplicationDimensions(autre);
-
-    Matrice<T> resultat(lignes, autre.colonnes);
-    for (int j = 0; j < autre.colonnes; ++j) {
-        for (int i = 0; i < lignes; ++i) {
-            resultat(i, j) = T();
-            for (int k = 0; k < colonnes; ++k) {
-                resultat(i, j) += elements[i][k] * autre.elements[k][j];
-            }
-        }
-    }
-
-    return resultat;
-}
-
-
-template<class T>
-Matrice<T> Matrice<T>::multiplyJKI(const Matrice<T>& autre) const {
-    validerMultiplicationDimensions(autre);
-
-    Matrice<T> resultat(lignes, autre.colonnes);
-    resultat.initialiserMatrice();
-
-    for (int j = 0; j < autre.colonnes; ++j) {
-        for (int k = 0; k < colonnes; ++k) {
-            for (int i = 0; i < lignes; ++i) {
-                resultat(i, j) += elements[i][k] * autre.elements[k][j];
-            }
-        }
-    }
-
-    return resultat;
-}
-
-
-template<class T>
-Matrice<T> Matrice<T>::multiplyKIJ(const Matrice<T>& autre) const {
-    validerMultiplicationDimensions(autre);
-
-    Matrice<T> resultat(lignes, autre.colonnes);
-    for (int k = 0; k < colonnes; ++k) {
-        for (int i = 0; i < lignes; ++i) {
-            for (int j = 0; j < autre.colonnes; ++j) {
-                if (k == 0) {
-                    resultat(i, j) = T(); 
-                }
-                resultat(i, j) += elements[i][k] * autre.elements[k][j];
-            }
-        }
-    }
-
-    return resultat;
-}
-
-
-template<class T>
-Matrice<T> Matrice<T>::multiplyKJI(const Matrice<T>& autre) const {
-    validerMultiplicationDimensions(autre);
-
-    Matrice<T> resultat(lignes, autre.colonnes);
-    for (int k = 0; k < colonnes; ++k) {
-        for (int j = 0; j < autre.colonnes; ++j) {
-            for (int i = 0; i < lignes; ++i) {
-                if (k == 0) {
-                    resultat(i, j) = T();    // Initialisation à zéro
-                }
                 resultat(i, j) += elements[i][k] * autre.elements[k][j];
             }
         }
