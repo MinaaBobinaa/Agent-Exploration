@@ -22,6 +22,8 @@ class Coordonnees {
   Coordonnees(int _salle = -1, int _ligne = -1, int _colonne = -1);
 
   int getSalle() const;
+  int getLigne() const;
+  int getColonne() const;
 
   bool operator==(const Coordonnees&) const;
 
@@ -49,13 +51,16 @@ class Salle {
 
   bool& marqueurVisite(const Coordonnees&) const;
 
- private:
+    // Retourne le nombre de cases valides de la salle
+  int obtenirNbCases() const;
   // Donne la position (indice) dans le tableau `cellules` correspondant
   // à la position (ligne, colonne) dans la salle
   int obtenirIndice(int ligne, int colonne) const;  // -1 -> position invalide
 
-  // Retourne le nombre de cases valides de la salle
-  int obtenirNbCases() const;
+ private:
+  
+
+
 
   // Attributs (vous pouvez en ajouter d'autres si nécessaire)
   TypeSalle type;
