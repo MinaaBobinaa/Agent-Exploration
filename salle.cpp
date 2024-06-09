@@ -135,7 +135,19 @@ int Salle::obtenirIndice(int ligne, int colonne) const {
   return index;
 
   } else if (type == Triangle) {
-    // À compléter
+    int n = dimension;
+    int mid = n / 2;
+    if (ligne < 0 || ligne >= n - mid || colonne < ligne || colonne >= n - ligne)
+      return -1;
+
+    int index = 0;
+    for (int i = 0; i < ligne; ++i) {
+      index += n - 2 * i; 
+    }
+   
+    index += colonne - ligne;
+
+    return index;
   }
 
   return -1;  // type invalide
