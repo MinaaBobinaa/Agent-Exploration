@@ -13,6 +13,16 @@ using namespace std;
 int Univers::calculerNombreChemins(const Coordonnees& depart,
                                    const Coordonnees& arrivee) const {
   // À compléter
+    // Vérifie si la cellule de départ est valide
+    if (!getSalle(depart.getSalle()).estPositionValide(depart)) {
+        return -1; // Cellule de départ invalide
+    }
+
+    // Vérifie si la cellule d'arrivée est valide
+    if (!getSalle(arrivee.getSalle()).estPositionValide(arrivee)) {
+        return -1; // Cellule d'arrivée invalide
+    }
+
   Tableau<Coordonnees> visite(100000); // Taille initiale du tableau dynamique
   int indexVisite = 0;
   return dfs(depart, arrivee, visite, indexVisite);
@@ -61,6 +71,7 @@ int Univers::dfs(const Coordonnees& courant, const Coordonnees& arrivee,
     // Retire courant de visite
     --indexVisite;
 
+    //return chemins;
     return chemins;
 }
 
