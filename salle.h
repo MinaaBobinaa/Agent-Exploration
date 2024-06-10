@@ -29,6 +29,7 @@ class Coordonnees {
 
   // Format: (s, i, j)
   friend std::istream& operator>>(std::istream&, Coordonnees&);
+  friend std::ostream& operator<<(std::ostream& os, const Coordonnees& coord);
 
   friend class Salle;
 
@@ -44,6 +45,10 @@ class Salle {
  public:
   Salle();
   Salle(const std::string& nomType, int _dimension);
+
+  int getDimension() const;
+  TypeSalle getType() const;
+  const Coordonnees& getPortail(const Coordonnees&) const;
 
   bool estPositionValide(const Coordonnees&) const;
   const Coordonnees& obtenirPortail(const Coordonnees&) const;

@@ -35,9 +35,29 @@ bool Coordonnees::operator==(const Coordonnees& c) const {
 istream& operator>>(istream& is, Coordonnees& c) {
   // À compléter
   char ch1, ch2, ch3;
-  is >> ch1 >> c.salle >> ch2 >> c.ligne >> ch3 >> c.colonne;
+  is >> c.salle >> ch1 >> c.ligne >> ch2 >> c.colonne >> ch3;
   return is;
 }
+
+ostream& operator<<(std::ostream& os, const Coordonnees& coord) {
+    os << coord.salle << " (" << coord.ligne << "," << coord.colonne << ")";
+    return os;
+  }
+
+
+const Coordonnees& Salle::getPortail(const Coordonnees& p) const {
+    int indice = obtenirIndice(p.ligne, p.colonne);
+    if (indice != -1 && indice < cellules.taille()) {
+        const Coordonnees& portail = cellules[indice].portail;
+        if (portail.getSalle() != -1) {
+            return portail;
+        }
+    }
+    // Retourne des coordonnées invalides si aucun portail n'est trouvé
+    static Coordonnees coordInvalides(-1, -1, -1);
+    return coordInvalides;
+}
+
 
 Salle::Salle() {}
 
@@ -53,6 +73,14 @@ Salle::Salle(const string& nomType, int _dimension) : dimension(_dimension) {
 
   for (int i = 0; i < obtenirNbCases(); ++i)
     cellules.ajouter(Cellule());
+}
+
+int Salle::getDimension() const {
+  return dimension;
+}
+
+TypeSalle Salle::getType() const {
+ return type; 
 }
 
 bool Salle::estPositionValide(const Coordonnees& p) const {

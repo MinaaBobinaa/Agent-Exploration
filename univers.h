@@ -18,8 +18,16 @@ class Univers {
 
   friend std::istream& operator>>(std::istream&, Univers&);
 
+// À compléter
+
+  size_t getNombreSalles() const { return salles.taille(); }
+  const Salle& getSalle(int index) const { return salles[index]; }
+
  private:
   // À compléter
+  int dfs(const Coordonnees& courant, const Coordonnees& arrivee,
+            Tableau<Coordonnees>& visite, int& indexVisite) const;
+  Tableau<Salle> salles;
 };
 
 #endif
