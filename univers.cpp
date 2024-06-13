@@ -12,67 +12,64 @@ using namespace std;
 
 int Univers::calculerNombreChemins(const Coordonnees& depart,
                                    const Coordonnees& arrivee) const {
-  // À compléter
-    // Vérifie si la cellule de départ est valide
-    if (!getSalle(depart.getSalle()).estPositionValide(depart)) {
-        return -1; // Cellule de départ invalide
-    }
+  
+  if (!getSalle(depart.getSalle()).estPositionValide(depart)) {
+    return -1; // Cellule de départ invalide
+  }
 
-    // Vérifie si la cellule d'arrivée est valide
-    if (!getSalle(arrivee.getSalle()).estPositionValide(arrivee)) {
-        return -1; // Cellule d'arrivée invalide
-    }
+  if (!getSalle(arrivee.getSalle()).estPositionValide(arrivee)) {
+    return -1;
+  }
 
-  Tableau<Coordonnees> visite(100000); // Taille initiale du tableau dynamique
+  Tableau<Coordonnees> visite(10000);
   int indexVisite = 0;
-  return dfs(depart, arrivee, visite, indexVisite);
+  return rechercherChemin(depart, arrivee, visite, indexVisite);
 }
 
-int Univers::dfs(const Coordonnees& courant, const Coordonnees& arrivee,
+
+int Univers::rechercherChemin(const Coordonnees& courant, const Coordonnees& arrivee,
                  Tableau<Coordonnees>& visite, int& indexVisite) const {
-    if (courant == arrivee) {
-        return 1; // Chemin trouvé
+
+  if (courant == arrivee) {
+    return 1;
+  }
+
+  for (int i = 0; i < indexVisite; ++i) {
+    if (visite[i] == courant) {
+      return 0; // Déjà visité
     }
+  }
 
-    // Vérifie si courant est dans visite
-    for (int i = 0; i < indexVisite; ++i) {
-        if (visite[i] == courant) {
-            return 0; // Déjà visité
-        }
+  // Ajoute courant à visite
+  visite[indexVisite++] = courant;
+
+  int chemins = 0;
+  const Salle& salle = getSalle(courant.getSalle());
+
+  // Directions adjacentes
+  Coordonnees directions[4] = {
+    Coordonnees(courant.getSalle(), courant.getLigne() - 1, courant.getColonne()),
+    Coordonnees(courant.getSalle(), courant.getLigne() + 1, courant.getColonne()),
+    Coordonnees(courant.getSalle(), courant.getLigne(), courant.getColonne() - 1),
+    Coordonnees(courant.getSalle(), courant.getLigne(), courant.getColonne() + 1)
+  };
+
+  // Explore les mouvements adjacents
+  for (int i = 0; i < 4; ++i) {
+    if (salle.estPositionValide(directions[i])) {
+      chemins += rechercherChemin(directions[i], arrivee, visite, indexVisite);
     }
+  }
 
-    // Ajoute courant à visite
-    visite[indexVisite++] = courant;
+  // Explore les portails
+  const Coordonnees& portail = salle.getPortail(courant);
+  if (portail.getSalle() != -1) {
+    chemins += rechercherChemin(portail, arrivee, visite, indexVisite);
+  }
 
-    int chemins = 0;
-    const Salle& salle = getSalle(courant.getSalle());
+  --indexVisite;
 
-    // Directions adjacentes (up, down, left, right)
-    Coordonnees directions[4] = {
-        Coordonnees(courant.getSalle(), courant.getLigne() - 1, courant.getColonne()),
-        Coordonnees(courant.getSalle(), courant.getLigne() + 1, courant.getColonne()),
-        Coordonnees(courant.getSalle(), courant.getLigne(), courant.getColonne() - 1),
-        Coordonnees(courant.getSalle(), courant.getLigne(), courant.getColonne() + 1)
-    };
-
-    // Explore les mouvements adjacents
-    for (int i = 0; i < 4; ++i) {
-        if (salle.estPositionValide(directions[i])) {
-            chemins += dfs(directions[i], arrivee, visite, indexVisite);
-        }
-    }
-
-    // Explore les portails
-    const Coordonnees& portail = salle.getPortail(courant);
-    if (portail.getSalle() != -1) {
-        chemins += dfs(portail, arrivee, visite, indexVisite);
-    }
-
-    // Retire courant de visite
-    --indexVisite;
-
-    //return chemins;
-    return chemins;
+  return chemins;
 }
 
 
@@ -88,7 +85,6 @@ istream& operator>>(istream& is, Univers& univers) {
     int dim;
     is >> dim;
 
-    // À compléter
     Salle salle(type, dim);
     univers.salles.ajouter(salle);
   }
@@ -105,17 +101,8 @@ istream& operator>>(istream& is, Univers& univers) {
 
     is >> c2;
 
-    // À compléter
-    // std::cout << "Ajout du portail : " << c1 << " <--> " << c2 << "\n";
-
     univers.salles[c1.getSalle()].placerPortailCellule(c1, c2);
     univers.salles[c2.getSalle()].placerPortailCellule(c2, c1);
-
-    // // Affichage du portail de c1 après l'ajout
-    //     const Coordonnees& portailC1 = univers.salles[c1.getSalle()].getPortail(c1);
-    //     std::cout << "Portail de " << c1 << " mène à " << portailC1 << "\n";
-    //     const Coordonnees& portailC2 = univers.salles[c2.getSalle()].getPortail(c2);
-    //     std::cout << "Portail de " << c2 << " mène à " << portailC2 << "\n";
 
   }
 
