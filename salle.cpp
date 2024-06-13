@@ -8,7 +8,7 @@
 
 #include <cassert>
 #include <iostream>
-#include <cmath>
+
 
 using namespace std;
 
@@ -28,12 +28,10 @@ int Coordonnees::getColonne() const {
 }
 
 bool Coordonnees::operator==(const Coordonnees& c) const {
-  // À compléter
   return salle == c.salle && ligne == c.ligne && colonne == c.colonne;
 }
 
 istream& operator>>(istream& is, Coordonnees& c) {
-  // À compléter
   char ch1, ch2, ch3;
   is >> c.salle >> ch1 >> c.ligne >> ch2 >> c.colonne >> ch3;
   return is;
@@ -43,20 +41,6 @@ ostream& operator<<(std::ostream& os, const Coordonnees& coord) {
     os << coord.salle << " (" << coord.ligne << "," << coord.colonne << ")";
     return os;
   }
-
-
-const Coordonnees& Salle::getPortail(const Coordonnees& p) const {
-    int indice = obtenirIndice(p.ligne, p.colonne);
-    if (indice != -1 && indice < cellules.taille()) {
-        const Coordonnees& portail = cellules[indice].portail;
-        if (portail.getSalle() != -1) {
-            return portail;
-        }
-    }
-    // Retourne des coordonnées invalides si aucun portail n'est trouvé
-    static Coordonnees coordInvalides(-1, -1, -1);
-    return coordInvalides;
-}
 
 
 Salle::Salle() {}
@@ -82,6 +66,21 @@ int Salle::getDimension() const {
 TypeSalle Salle::getType() const {
  return type; 
 }
+
+
+const Coordonnees& Salle::getPortail(const Coordonnees& p) const {
+    int indice = obtenirIndice(p.ligne, p.colonne);
+    if (indice != -1 && indice < cellules.taille()) {
+        const Coordonnees& portail = cellules[indice].portail;
+        if (portail.getSalle() != -1) {
+            return portail;
+        }
+    }
+    // Retourne des coordonnées invalides si aucun portail n'est trouvé
+    static Coordonnees coordInvalides(-1, -1, -1);
+    return coordInvalides;
+}
+
 
 bool Salle::estPositionValide(const Coordonnees& p) const {
   return obtenirIndice(p.ligne, p.colonne) != -1;
@@ -125,58 +124,68 @@ int Salle::obtenirNbCases() const {
 
 int Salle::obtenirIndice(int ligne, int colonne) const {
   if (type == Carre) {
-    if (ligne < 0 || ligne >= dimension || colonne < 0 || colonne >= dimension)
-      return -1;
-    return (ligne * dimension) + colonne;
+    return obtenirIndiceCarre(ligne, colonne);
   } else if (type == Diamant) {
-    int n = dimension;
-    int half = n / 2;
-    int index = 0;
-
-    if (ligne < 0 || ligne >= n || colonne < 0 || colonne >= n)
-      return -1;
-
-    if (ligne <= half) {
-      if (colonne < half - ligne || colonne > half + ligne)
-        return -1; 
-
-      for (int i = 0; i < ligne; ++i) {
-        index += 2 * i + 1;
-      }
-        
-      index += colonne - (half - ligne);
-    } else {
-            
-      if (colonne < ligne - half || colonne > 3 * half - ligne)
-        return -1; 
-
-      for (int i = 0; i <= half; ++i) {
-        index += 2 * i + 1;
-      }
-      for (int i = half + 1; i < ligne; ++i) {
-        index += 2 * (n - i - 1) + 1;
-      }
-      
-      index += colonne - (ligne - half);
-    }
-
-  return index;
-
+    return obtenirIndiceDiamant(ligne, colonne);
   } else if (type == Triangle) {
-    int n = dimension;
-    int mid = n / 2;
-    if (ligne < 0 || ligne >= n - mid || colonne < ligne || colonne >= n - ligne)
-      return -1;
-
-    int index = 0;
-    for (int i = 0; i < ligne; ++i) {
-      index += n - 2 * i; 
-    }
-   
-    index += colonne - ligne;
-
-    return index;
+    return obtenirIndiceTriangle(ligne, colonne);
   }
 
   return -1;  // type invalide
+}
+
+int Salle::obtenirIndiceCarre(int ligne, int colonne) const {
+  if (ligne < 0 || ligne >= dimension || colonne < 0 || colonne >= dimension)
+    return -1;
+  return (ligne * dimension) + colonne;
+}
+
+int Salle::obtenirIndiceDiamant(int ligne, int colonne) const {
+  int n = dimension;
+  int half = n / 2;
+  int index = 0;
+
+  if (ligne < 0 || ligne >= n || colonne < 0 || colonne >= n)
+    return -1;
+
+  if (ligne <= half) {
+    if (colonne < half - ligne || colonne > half + ligne)
+      return -1;
+
+    for (int i = 0; i < ligne; ++i) {
+      index += 2 * i + 1;
+    }
+
+    index += colonne - (half - ligne);
+  } else {
+    if (colonne < ligne - half || colonne > 3 * half - ligne)
+      return -1;
+
+    for (int i = 0; i <= half; ++i) {
+      index += 2 * i + 1;
+    }
+    for (int i = half + 1; i < ligne; ++i) {
+      index += 2 * (n - i - 1) + 1;
+    }
+
+    index += colonne - (ligne - half);
+  }
+
+  return index;
+}
+
+int Salle::obtenirIndiceTriangle(int ligne, int colonne) const {
+  int n = dimension;
+  int mid = n / 2;
+  if (ligne < 0 || ligne >= n - mid || colonne < ligne || colonne >= n - ligne)
+    return -1;
+
+  int index = 0;
+  for (int i = 0; i < ligne; ++i) {
+    index += n - 2 * i;
+  }
+
+  index += colonne - ligne;
+
+  return index;
 }

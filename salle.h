@@ -56,16 +56,18 @@ class Salle {
 
   bool& marqueurVisite(const Coordonnees&) const;
 
-    // Retourne le nombre de cases valides de la salle
-  int obtenirNbCases() const;
+ private:
+  
   // Donne la position (indice) dans le tableau `cellules` correspondant
   // à la position (ligne, colonne) dans la salle
   int obtenirIndice(int ligne, int colonne) const;  // -1 -> position invalide
 
- private:
-  
+  // Retourne le nombre de cases valides de la salle
+  int obtenirNbCases() const;
 
-
+  int obtenirIndiceCarre(int ligne, int colonne) const;
+  int obtenirIndiceDiamant(int ligne, int colonne) const;
+  int obtenirIndiceTriangle(int ligne, int colonne) const;
 
   // Attributs (vous pouvez en ajouter d'autres si nécessaire)
   TypeSalle type;
