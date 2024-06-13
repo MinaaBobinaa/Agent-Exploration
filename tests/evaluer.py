@@ -24,13 +24,12 @@ Hiérarchie de dossier pour correcteurs:
 
 from datetime import datetime
 from enum import Enum
+from shutil import which
 import os
 import re
 import resource
 import subprocess
 import sys
-
-from distutils.spawn import find_executable
 
 __author__ = "Jaël Champagne Gareau, Guillaume Gosset"
 
@@ -48,9 +47,9 @@ MODE = Mode.etudiant_evaluer
 NOM_EXECUTABLE = "tp2"
 DOSSIER_ETUDIANTS = "etudiants"
 DOSSIER_TESTS = "tests"
-SORTIES_VALIDEUR = ["nbReqs", "nbExistanceOK", "NbCheminsOK"]
+SORTIES_VALIDEUR = ["nbReqs", "nbExistenceOK", "NbCheminsOK"]
 TYPE_FICHIERS_ENTREES = ["-univers", "-req"]  # 2 fichiers d'entrées
-TEST_SIMPLE = "C1_carre"  # test exécuté pour le mode valider
+TEST_SIMPLE = "C1_1c"  # test exécuté pour le mode valider
 PREFIXES_TESTS = [  # ordre aléatoire si laissé vide
 
 ]
@@ -103,7 +102,7 @@ def obtenir_tests():
             convert = lambda txt: int(txt) if txt.isdigit() else txt.lower()
             alphanum_key = lambda key: [convert(c)
                                         for c in re.split('([0-9]+)', key)]
-            return sorted(l, key = alphanum_key)
+            return sorted(l, key=alphanum_key)
 
         prefixes = natural_sort(list({f.split("-", 1)[0]
                                       for f in os.listdir(chemin_tests)
@@ -159,7 +158,7 @@ NL = '\033[L'
 # Checks if gtime command exists (OSX only)
 TIME = "/usr/bin/time"  # chemin de la commande time
 if "Darwin" in TYPE_OS:
-    HAS_TIME = find_executable("gtime") is not None
+    HAS_TIME = which("gtime") is not None
 
     if not HAS_TIME:
         print("Attention: La commande gtime n'est pas installée, "

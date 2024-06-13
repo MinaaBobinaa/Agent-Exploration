@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
   }
 
   int nbReqs = 0;
-  int nbExistanceOK = 0;
+  int nbExistenceOK = 0;
   int nbCheminsOK = 0;
   while (!(fsSolution >> ws).eof() && !(fsVotre >> ws).eof()) {
     ++nbReqs;
@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
 
     if ((repSol == -1 && repVotre == -1) || (repSol == 0 && repVotre == 0)
         || (repSol > 0 && repVotre > 0))
-      ++nbExistanceOK;  // critère C1/C2
+      ++nbExistenceOK;  // critère C1/C2
 
     if (repSol == repVotre) ++nbCheminsOK;  // critère C3/c4
   }
@@ -49,8 +49,8 @@ int main(int argc, char* argv[]) {
   fsVotre.close();
 
   cout << "Nombre de requêtes dans les fichiers: " << nbReqs << '\n';
-  cout << "nbReqs\tnbExistanceOK\tnbCheminsOK\n";
-  cout << nbReqs << '\t' << nbExistanceOK << '\t' << nbCheminsOK << endl;
+  cout << "nbReqs\tnbExistenceOK\tnbCheminsOK\n";
+  cout << nbReqs << '\t' << nbExistenceOK << '\t' << nbCheminsOK << endl;
 
   return 0;
 }
